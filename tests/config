@@ -1,0 +1,16 @@
+[DEFAULT]
+id = abc
+name = service applications
+
+[service]
+name = service web applications
+dependency = tomcat, java
+
+[tomcat]
+name = tomcat
+folders = /usr/local/tomcat
+dependency = java
+
+[java]
+name = java
+folders = /usr/local/jvm

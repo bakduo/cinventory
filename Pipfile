@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+psutil = "==6.0.0"
+distro = "==1.9.0"
+requests = "==2.32.3"
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+flake8 = "*"
+black = "*"
+pre-commit = "*"
+
+[requires]
+python_version = "3.10"
