@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 psutil = "==6.0.0"
 distro = "==1.9.0"
-requests = "==2.32.3"
+requests = "*"
 
 [dev-packages]
 pytest = "*"
