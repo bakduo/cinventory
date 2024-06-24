@@ -1,0 +1,27 @@
+[project]
+name = "cinventory_pyrdo"
+version = "1.0.0"
+authors = [
+  { name="bakduo"},
+]
+
+description = "cinventory_pyrdo package"
+
+readme = "README.md"
+
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+
+keywords = ['inventory']
+
+dependencies = ['psutil==6.0.0', 'distro==1.9.0', 'requests==2.32.3']
+
+[project.urls]
+Homepage = "https://github.com/bakduo/cinventory"
+Issues = "https://github.com/bakduo/cinventory/issues"
+[build-system]
+requires = ["setuptools", "wheel"]  # PEP 508 specifications.

@@ -4,3 +4,6 @@ dist/
 .coverage
 Pipfile.lock
 src/cinventory_pyrdo.egg-info
+README.rst
+CHANGES.rst
+all-env-requeriments.txt

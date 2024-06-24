@@ -1,5 +1,9 @@
 build:
 	pipenv run python setup.py sdist
+	pipenv run twine check dist/*
+build2:
+	python -m build
+	pipenv run twine check dist/*
 test:
 	pytest
 coverage:
@@ -13,3 +17,10 @@ check:
 requeriments:
 	pipenv requirements > requirements-prod.txt
 	pipenv requirements --dev> requirements-dev.txt
+all-requeriments-env:
+	pipenv run pip freeze > all-env-requeriments.txt
+convertorst:
+	pandoc --from=markdown --to=rst --output=README.rst README.md
+	pandoc --from=markdown --to=rst --output=CHANGES.rst CHANGES.md
+uploadtestrepo:
+	pipenv run twine upload --repository testpypi --verbose dist/*
