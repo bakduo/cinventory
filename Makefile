@@ -2,10 +2,13 @@ build:
 	pipenv run python setup.py sdist
 	pipenv run twine check dist/*
 build2:
+	rm -f dist/*
 	python -m build
 	pipenv run twine check dist/*
 test:
 	pytest
+testinstall:
+	pipenv install -e .
 coverage:
 	pipenv run pytest tests --cov
 checkcode:

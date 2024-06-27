@@ -22,6 +22,9 @@ This is Python application without need it root privileges.
 
 ![using](img/maybe-using-cinventory.png)
 
+![using with backup](img/usecase2.png)
+
+
 
 ## Configuration
 

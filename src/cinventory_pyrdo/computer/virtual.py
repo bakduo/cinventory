@@ -23,16 +23,15 @@ import json
 class CommandExec:
 
     def __init__(self):
-        self._cmd = None
-        self._stdout = None
-        self._admin = None
+        self.__cmd = None
+        self.__stdout = None
 
     def __str__(self):
         return "Command class"
 
     @property
     def file_name_out(self):
-        return self._stdout
+        return self.__stdout
 
     def exec_simple_read(self, value):
 
@@ -40,10 +39,10 @@ class CommandExec:
         if tmp_value.find("sudo") > 0:
             raise "Not permit sudo command"
 
-        self._cmd = tmp_value
+        self.__cmd = tmp_value
 
         try:
-            return os.popen(self._cmd).read()
+            return os.popen(self.__cmd).read()
         except Exception as e:
             logging.debug("Exception on CommandExec method exec: {}".format(e))
 
@@ -53,10 +52,10 @@ class CommandExec:
         if tmp_value.find("sudo") > 0:
             raise "Not permit sudo command"
         day = datetime.now().day
-        self._stdout = "stdoutcmd{}.log".format(day)
-        self._cmd = tmp_value + " > /tmp/" + self._stdout
+        self.__stdout = "stdoutcmd{}.log".format(day)
+        self.__cmd = tmp_value + " > /tmp/" + self.__stdout
         try:
-            os.system(self._cmd)
+            os.system(self.__cmd)
         except Exception as e:
             logging.debug("Exception on CommandExec method exec: {}".format(e))
 
@@ -92,9 +91,9 @@ class VMUtil(ABC):
                 return True
             elif any("get_list_pkg" in B.__dict__ for B in C.__mro__):
                 return True
-            elif any("add_services" in B.__dict__ for B in C.__mro__):
+            elif any("add__services" in B.__dict__ for B in C.__mro__):
                 return True
-            elif any("get_services" in B.__dict__ for B in C.__mro__):
+            elif any("get__services" in B.__dict__ for B in C.__mro__):
                 return True
         return NotImplemented
 
@@ -112,53 +111,55 @@ class DebVirtual(VMUtil):
 
     def __init__(self):
         super().__init__()
-        self._uuid = DebVirtual.getUUID()
-        self._name = None
-        self._os = platform.system()
-        self._arch = platform.machine()
-        self._hostname = socket.gethostname()
-        self._date = datetime.now()
-        self._kernel = platform.release()
-        self._services = []
-        self._productname = None
+        self.__uuid = DebVirtual.getUUID()
+        self.__name = None
+        self.__os = platform.system()
+        self.__arch = platform.machine()
+        self.__hostname = socket.gethostname()
+        # self.__date = datetime.now()
+        self.__kernel = platform.release()
+        self.__services = []
+        self.__productname = None
 
     def __str__(self):
         out_str = "Ubuntu vm hostname:"
-        out_str += "{} os: {} arch: {}".format(self._hostname, self._os, self._arch)
+        out_str += "{} os: {} arch: {}".format(self.__hostname, self.__os, self.__arch)
         return out_str
 
     def product_name(self):
-        cmd = CommandExec()
-        name = cmd.exec_simple_read("cat /sys/class/dmi/id/product_name")
-        name = name.strip()
-        name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/board_name")
-        name = name.strip()
-        name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/product_sku")
-        return name.strip()
+        if self.__productname is None:
+            cmd = CommandExec()
+            name = cmd.exec_simple_read("cat /sys/class/dmi/id/product__name")
+            name = name.strip()
+            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/board__name")
+            name = name.strip()
+            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/product_sku")
+            self.__productname = name.strip()
+        return self.__productname
 
     @property
     def hostname(self):
-        return self._hostname
+        return self.__hostname
 
     @property
     def name(self):
-        return self._name
+        return self.__name
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self.__name = value
 
     def get_typeos(self):
         complete_os = platform.version()
-        complete_os += " " + str(self._os)
-        complete_os += " Kernel: " + str(self._kernel)
+        complete_os += " " + str(self.__os)
+        complete_os += " Kernel: " + str(self.__kernel)
         complete_os += " version: " + str(distro.version())
         complete_os += " name: " + str(distro.name())
         return complete_os
 
     def get_all_ip(self):
         try:
-            addresses = socket.getaddrinfo(self._hostname, None)
+            addresses = socket.getaddrinfo(self.__hostname, None)
             address_info = []
             for address in addresses:
                 address_info.append(address[4][0])
@@ -192,10 +193,10 @@ class DebVirtual(VMUtil):
         return self._to_json_packages(cmd.file_name_out)
 
     def get_services(self):
-        return self._services
+        return self.__services
 
     def add_services(self, value):
-        self._services.append(value)
+        self.__services.append(value)
 
     def generate_report(self, configparser):
 
@@ -248,7 +249,7 @@ class DebVirtual(VMUtil):
             "os": os,
             "service": service_tmp,
             "resource_name": self.product_name(),
-            "id": self._uuid,
+            "id": self.__uuid,
         }
 
         return json.dumps(payload).encode("utf-8")
@@ -257,28 +258,28 @@ class DebVirtual(VMUtil):
 class ServiceLocal:
 
     def __init__(self):
-        self._name = None
-        self._dependency = []
-        self._folders = []
+        self.__name = None
+        self.__dependency = []
+        self.__folders = []
 
     @property
     def name(self):
-        return self._name
+        return self.__name
 
     @property
     def dependency(self):
-        return self._dependency
+        return self.__dependency
 
     @property
     def folders(self):
-        return self._folders
+        return self.__folders
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self.__name = value
 
     def add_dependency(self, value):
-        self._dependency.append(value)
+        self.__dependency.append(value)
 
     def add_folders(self, value):
-        self._folders.append(value)
+        self.__folders.append(value)
