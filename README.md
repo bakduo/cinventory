@@ -16,6 +16,11 @@ This project is licensed under the terms of the MIT license.
 IT operators need to know all or some digital resource to operate for day to day however for this particular task you need install some o different packages for generate inventory and maybe it complicates or difficult for differents restriction about the operative system or service container then it's simple solution for generate to report and send to remote server if you need it. 
 This is Python application without need it root privileges.
 
+
+![class](img/class.png)
+
+![packages](img/packages.png)
+
 ![use case](img/use%20case.png)
 
 ![util can send](img/util.png)
