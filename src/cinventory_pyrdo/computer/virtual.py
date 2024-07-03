@@ -126,12 +126,18 @@ class DebVirtual(VMUtil):
         out_str += "{} os: {} arch: {}".format(self.__hostname, self.__os, self.__arch)
         return out_str
 
+    @classmethod
+    def valid_distro(cls, name):
+        if name in ("debian", "mint", "ubuntu"):
+            return True
+        return False
+
     def product_name(self):
         if self.__productname is None:
             cmd = CommandExec()
-            name = cmd.exec_simple_read("cat /sys/class/dmi/id/product__name")
+            name = cmd.exec_simple_read("cat /sys/class/dmi/id/product_name")
             name = name.strip()
-            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/board__name")
+            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/board_name")
             name = name.strip()
             name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/product_sku")
             self.__productname = name.strip()

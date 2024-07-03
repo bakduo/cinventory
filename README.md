@@ -76,4 +76,13 @@ In this particular oportunity you don't need acoplate to server for work. This a
 
 python -m cinventory_pyrdo.cli -h
 
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show program version
+  -t TYPE, --type TYPE  type distro debian, mint and ubuntu
+  -s SERVER, --server SERVER
+                        set remote server to send report
+  -g, --generate        enable to generate report
+
+
 ```

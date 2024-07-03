@@ -27,3 +27,6 @@ convertorst:
 	pandoc --from=markdown --to=rst --output=CHANGES.rst CHANGES.md
 uploadtestrepo:
 	pipenv run twine upload --repository testpypi --verbose dist/*
+
+uploadprodrepo:
+	pipenv run twine upload --repository pypi --verbose dist/*

@@ -38,6 +38,21 @@ def test_main_procesing():
         assert len(item.name) > 0
 
 
+def test_main_distro_procesing():
+    config = configparser.ConfigParser()
+    config.read("tests/config")
+    test_distro = "debian"
+    assert DebVirtual.valid_distro(test_distro) is True
+    test_distro = "ubuntu"
+    assert DebVirtual.valid_distro(test_distro) is True
+    test_distro = "mint"
+    assert DebVirtual.valid_distro(test_distro) is True
+    test_distro = "centos"
+    assert DebVirtual.valid_distro(test_distro) is False
+    test_distro = ""
+    assert DebVirtual.valid_distro(test_distro) is False
+
+
 def test_payload_json():
     config = configparser.ConfigParser()
 
