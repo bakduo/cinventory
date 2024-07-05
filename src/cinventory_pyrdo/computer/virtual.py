@@ -5,7 +5,7 @@ import socket
 
 from abc import ABC, abstractmethod
 
-from datetime import datetime
+# from datetime import datetime
 
 import logging
 
@@ -13,11 +13,15 @@ import platform
 
 import distro
 
-import os
-
 import configparser
 
 import json
+
+from shlex import quote
+
+# from tempfile import NamedTemporaryFile
+
+import subprocess
 
 
 class CommandExec:
@@ -30,34 +34,55 @@ class CommandExec:
         return "Command class"
 
     @property
-    def file_name_out(self):
+    def output(self):
         return self.__stdout
-
-    def exec_simple_read(self, value):
-
-        tmp_value = value.strip()
-        if tmp_value.find("sudo") > 0:
-            raise "Not permit sudo command"
-
-        self.__cmd = tmp_value
-
-        try:
-            return os.popen(self.__cmd).read()
-        except Exception as e:
-            logging.debug("Exception on CommandExec method exec: {}".format(e))
 
     def exec(self, value):
         # seconds = datetime.now().time().second
         tmp_value = value.strip()
-        if tmp_value.find("sudo") > 0:
-            raise "Not permit sudo command"
-        day = datetime.now().day
-        self.__stdout = "stdoutcmd{}.log".format(day)
-        self.__cmd = tmp_value + " > /tmp/" + self.__stdout
+        # sanitize check
+        if tmp_value.find("sudo") >= 0:
+            raise ValueError("Not permit sudo command")
+        if (
+            tmp_value.find(";") >= 0
+            or (tmp_value.find("&&") >= 0)
+            or (tmp_value.find("&") >= 0)
+        ):
+            raise ValueError("Not permit concat or pipeline or background command")
+
+        sanitize = "{}".format(quote(tmp_value))
+
+        self.__cmd = []
+
+        # standard command alone parameter
+
+        for cmd in sanitize.split(" "):
+            self.__cmd.append(cmd.replace("'", ""))
+
         try:
-            os.system(self.__cmd)
+            process_out = subprocess.Popen(
+                self.__cmd,
+                encoding="utf-8",
+                shell=False,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+            )
+            output, stderr = process_out.communicate(timeout=30)
+
+            if stderr:
+                raise ValueError("Error with the command: {}".format(self.__cmd))
+
+            self.__stdout = str(output)
+
         except Exception as e:
-            logging.debug("Exception on CommandExec method exec: {}".format(e))
+            process_out.kill()
+            output, error = process_out.communicate()
+            logging.debug(
+                "Exception on CommandExec method exec: {} {} {}".format(
+                    e, output, error
+                )
+            )
 
 
 class VMUtil(ABC):
@@ -135,11 +160,14 @@ class DebVirtual(VMUtil):
     def product_name(self):
         if self.__productname is None:
             cmd = CommandExec()
-            name = cmd.exec_simple_read("cat /sys/class/dmi/id/product_name")
+            cmd.exec("cat /sys/class/dmi/id/product_name")
+            name = cmd.output
             name = name.strip()
-            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/board_name")
+            cmd.exec("cat /sys/class/dmi/id/board_name")
+            name += "-" + cmd.output
             name = name.strip()
-            name += "-" + cmd.exec_simple_read("cat /sys/class/dmi/id/product_sku")
+            cmd.exec("cat /sys/class/dmi/id/product_sku")
+            name += "-" + cmd.output
             self.__productname = name.strip()
         return self.__productname
 
@@ -178,25 +206,22 @@ class DebVirtual(VMUtil):
 
         json_stdout = {"packages": {}}
 
-        with open("/tmp/" + stdout) as fpin:
-            for nr, line in enumerate(fpin):
-                clean_line = line.strip()
-                try:
-                    parts = clean_line.split("/")
-                    json_stdout["packages"][parts[0]] = parts[1]
-                except Exception as e:
-                    logging.debug(
-                        "Exception on DebVirtual json: {} with value: {}".format(
-                            e, parts
-                        )
-                    )
+        for line in stdout.split("\n"):
+            clean_line = line.strip()
+            try:
+                parts = clean_line.split("/")
+                json_stdout["packages"][parts[0]] = parts[1]
+            except Exception as e:
+                logging.debug(
+                    "Exception on DebVirtual json: {} with value: {}".format(e, parts)
+                )
 
         return json_stdout
 
     def get_list_pkg(self):
         cmd = CommandExec()
-        cmd.exec("apt list --installed 2>/dev/null")
-        return self._to_json_packages(cmd.file_name_out)
+        cmd.exec("apt list --installed")
+        return self._to_json_packages(cmd.output)
 
     def get_services(self):
         return self.__services

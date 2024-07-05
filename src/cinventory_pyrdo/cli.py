@@ -50,6 +50,7 @@ def main():
                 server_remote,
                 data=report,
                 headers={"Content-Type": "application/json"},
+                timeout=120,
             )
         else:
             raise "Don't support distro {} : use --help".format(server_distro)

@@ -30,3 +30,5 @@ uploadtestrepo:
 
 uploadprodrepo:
 	pipenv run twine upload --repository pypi --verbose dist/*
+security:
+	bandit -r src/ --format custom

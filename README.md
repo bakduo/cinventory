@@ -84,5 +84,8 @@ options:
                         set remote server to send report
   -g, --generate        enable to generate report
 
+Install:
+
+pip install --trusted-host repository packages-name
 
 ```
