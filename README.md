@@ -84,6 +84,14 @@ options:
                         set remote server to send report
   -g, --generate        enable to generate report
 
+Run:
+
+python -m cinventory_pyrdo.cli -t debian -g 
+
+or
+
+python -m cinventory_pyrdo.cli -t debian -g | jq
+
 Install:
 
 pip install --trusted-host repository packages-name
