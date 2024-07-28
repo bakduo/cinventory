@@ -3,6 +3,14 @@ build:
 	pipenv run twine check dist/*
 build2:
 	rm -f dist/*
+	pipenv check
+	pipenv run pytest tests --cov
+	pipenv run black tests/ src/
+	pipenv run flake8
+	pipenv requirements > requirements-prod.txt
+	pipenv requirements --dev> requirements-dev.txt
+	pandoc --from=markdown --to=rst --output=README.rst README.md
+	pandoc --from=markdown --to=rst --output=CHANGES.rst CHANGES.md
 	python -m build
 	pipenv run twine check dist/*
 test:

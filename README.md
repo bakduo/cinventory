@@ -72,6 +72,16 @@ Some situation need it collect custom data about service on VM,PC,etc. For examp
 
 In this particular oportunity you don't need acoplate to server for work. This application is independent the server funcionality then you building a custom server and if you wish build particular rule for your services.
 
+## Use cinventory Python interpreter
+
+```
+>>> from cinventory_pyrdo.computer.virtual import DebVirtual
+>>> anyhost =  DebVirtual()
+>>> help(anyhost)
+
+```
+
+## Use with cmdline
 ```
 
 python -m cinventory_pyrdo.cli -h

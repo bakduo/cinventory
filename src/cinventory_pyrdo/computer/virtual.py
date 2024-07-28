@@ -158,18 +158,26 @@ class DebVirtual(VMUtil):
         return False
 
     def product_name(self):
-        if self.__productname is None:
-            cmd = CommandExec()
-            cmd.exec("cat /sys/class/dmi/id/product_name")
-            name = cmd.output
-            name = name.strip()
-            cmd.exec("cat /sys/class/dmi/id/board_name")
-            name += "-" + cmd.output
-            name = name.strip()
-            cmd.exec("cat /sys/class/dmi/id/product_sku")
-            name += "-" + cmd.output
-            self.__productname = name.strip()
-        return self.__productname
+        try:
+            if self.__productname is None:
+                cmd = CommandExec()
+                cmd.exec("cat /sys/class/dmi/id/product_name")
+                name = cmd.output
+                name = name.strip()
+                cmd.exec("cat /sys/class/dmi/id/chassis_vendor")
+                name += "-" + cmd.output
+                name = name.strip()
+                cmd.exec("cat /sys/class/dmi/id/bios_release")
+                name += "-" + cmd.output
+                name = name.strip()
+                cmd.exec("cat /sys/class/dmi/id/sys_vendor")
+                name += "-" + cmd.output
+                name = name.strip()
+                self.__productname = name.strip()
+                return self.__productname
+        except Exception as e:
+            logging.DEBUG("Fail product_name {}".format(e))
+            raise ValueError("Not permit product_name incomplete")
 
     @property
     def hostname(self):

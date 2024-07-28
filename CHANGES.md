@@ -1,5 +1,12 @@
 CInventory_pyrdo
 ===
+- 1.0.6
+  * Fix version distro >=1.6.0. Problem, No matching distribution found for distro on Ubuntu 22 LTS.
+  * function product_name, remove board_name and product_sku. Add chassis_vendor, sys_vendor and bios_release.
+
+- 1.0.5
+  * Remove dependency without use, psutil.
+
 - 1.0.4
   * Fix Starting a process with a shell, possible injection detected, security issue
   * Fix Requests call without timeout
