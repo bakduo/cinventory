@@ -129,7 +129,7 @@ class DebVirtual(VMUtil):
     def getUUID(cls):
         config = configparser.ConfigParser()
         config.read("/etc/cinventory/resource")
-        ID = None
+        ID = -1
         if "id" in config["DEFAULT"]:
             ID = config["DEFAULT"]["id"]
         return ID

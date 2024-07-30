@@ -72,6 +72,17 @@ Some situation need it collect custom data about service on VM,PC,etc. For examp
 
 In this particular oportunity you don't need acoplate to server for work. This application is independent the server funcionality then you building a custom server and if you wish build particular rule for your services.
 
+Dependency:
+ - distro
+ - requests
+
+Install by testing:
+
+```
+python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps cinventory-pyrdo
+
+```
+
 ## Use cinventory Python interpreter
 
 ```
@@ -101,8 +112,6 @@ python -m cinventory_pyrdo.cli -t debian -g
 or
 
 python -m cinventory_pyrdo.cli -t debian -g | jq
-
-Install:
 
 pip install --trusted-host repository packages-name
 
